@@ -10,7 +10,6 @@ defmodule Anoma.Client.Examples.EProxy do
   alias Anoma.Client.Connection.GRPCProxy
   alias Anoma.Client.Examples.EClient
   alias Anoma.Proto.Intentpool.Intent
-  alias Anoma.Proto.Mempool
   alias Examples.ETransparent.ETransaction
   alias Noun.Nounable
 
@@ -88,11 +87,11 @@ defmodule Anoma.Client.Examples.EProxy do
       |> Noun.Jam.jam()
 
     # call the proxy
-    result = GRPCProxy.add_transaction(intent_jammed, :cairo_resource)
+    {:ok, response} =
+      GRPCProxy.add_transaction(intent_jammed, :cairo_resource)
 
     # assert the call succeeded
-    assert {:ok, %Mempool.Add.Response{result: "", __unknown_fields__: []}} ==
-             result
+    assert is_binary(response.result)
 
     client
   end

@@ -28,7 +28,7 @@ defmodule Anoma.Node.Transport.GRPC.Servers.Mempool do
 
     # submit the transaction to the mempool
     node_id = request.node.id
-    :ok = Mempool.tx(node_id, {request.transaction_type, noun})
+    Mempool.tx(node_id, {request.transaction_type, noun})
 
     # return an empty response
     %Add.Response{}

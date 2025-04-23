@@ -113,8 +113,6 @@ defmodule Anoma.Node.Examples.ESolver do
 
     tx = Examples.ETransparent.ETransaction.swap_from_actions()
 
-    IntentPool.new_intent(node_id, tx)
-
     tx_candidate = [
       [1, 0, [1 | tx |> Noun.Nounable.to_noun()], 0 | 909],
       0 | 707
@@ -123,10 +121,7 @@ defmodule Anoma.Node.Examples.ESolver do
     tx_filter = [Anoma.Node.Event.node_filter(node_id), %Mempool.TxFilter{}]
 
     with_subscription [tx_filter] do
-      Mempool.tx(
-        node_id,
-        {:transparent_resource, tx_candidate}
-      )
+      IntentPool.new_intent(node_id, tx)
 
       :ok =
         receive do

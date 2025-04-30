@@ -250,7 +250,7 @@ defmodule Anoma.Node.Transaction.Backends do
          true <- TTransaction.verify(tx),
          # possibly also add check for CU roots
          true <- storage_check(node_id, id, tx),
-         true <- verify_tx_root(node_id, tx) do
+         true <- verify_tx_root(node_id, id, tx) do
       map =
         for action <- tx.actions,
             reduce: %{
@@ -287,14 +287,23 @@ defmodule Anoma.Node.Transaction.Backends do
           {:ok, res} -> res
         end
 
+      old_roots =
+        case Ordering.read(node_id, {id, transparent_keyspace("roots")}) do
+          :absent -> []
+          {:ok, res} -> res
+        end
+
       writes = [
         {transparent_keyspace("roots"),
-         TAcc.value(
-           MapSet.union(
-             map.commitments,
-             old_cms
+         [
+           TAcc.value(
+             MapSet.union(
+               map.commitments,
+               old_cms
+             )
            )
-         )}
+           | old_roots
+         ]}
         | map.blobs
       ]
 
@@ -326,10 +335,10 @@ defmodule Anoma.Node.Transaction.Backends do
     end
   end
 
-  @spec verify_tx_root(String.t(), TTransaction.t()) ::
+  @spec verify_tx_root(String.t(), binary(), TTransaction.t()) ::
           true | {:error, String.t()}
-  defp verify_tx_root(node_id, trans = %TTransaction{}) do
-    with true <- roots_exist?(node_id, trans) do
+  defp verify_tx_root(node_id, id, trans = %TTransaction{}) do
+    with true <- roots_exist?(node_id, id, trans) do
       true
     else
       {:error, msg} ->
@@ -392,10 +401,11 @@ defmodule Anoma.Node.Transaction.Backends do
     end
   end
 
-  @spec roots_exist?(String.t(), TTransaction.t()) ::
+  @spec roots_exist?(String.t(), binary(), TTransaction.t()) ::
           true | {:error, String.t()}
   defp roots_exist?(
          node_id,
+         id,
          trans = %TTransaction{}
        ) do
     roots =
@@ -408,17 +418,17 @@ defmodule Anoma.Node.Transaction.Backends do
           |> MapSet.union(acc)
       end
 
+    committed_roots =
+      case Ordering.read(node_id, {id, transparent_keyspace("roots")}) do
+        :absent -> []
+        {:ok, res} -> res
+      end
+
     Enum.reduce_while(roots, true, fn root, acc ->
-      with {:atomic, [{_, {_, _}, ^root}]} <-
-             :mnesia.transaction(fn ->
-               :mnesia.match_object(
-                 {Storage.values_table(node_id),
-                  {:_, transparent_keyspace("roots")}, root}
-               )
-             end) do
+      if Enum.any?(committed_roots, &Noun.equal?(&1, root)) do
         {:cont, acc}
       else
-        {:atomic, []} -> {:halt, {:error, "Root #{inspect(root)} is absent"}}
+        {:halt, {:error, "Root #{inspect(root)} is absent"}}
       end
     end)
   end

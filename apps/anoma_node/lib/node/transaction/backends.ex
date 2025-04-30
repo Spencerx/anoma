@@ -288,7 +288,7 @@ defmodule Anoma.Node.Transaction.Backends do
         end
 
       writes = [
-        {transparent_keyspace("anchor"),
+        {transparent_keyspace("roots"),
          TAcc.value(
            MapSet.union(
              map.commitments,
@@ -413,7 +413,7 @@ defmodule Anoma.Node.Transaction.Backends do
              :mnesia.transaction(fn ->
                :mnesia.match_object(
                  {Storage.values_table(node_id),
-                  {:_, transparent_keyspace("anchor")}, root}
+                  {:_, transparent_keyspace("roots")}, root}
                )
              end) do
         {:cont, acc}

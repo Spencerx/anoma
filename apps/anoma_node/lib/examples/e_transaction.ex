@@ -415,7 +415,7 @@ defmodule Anoma.Node.Examples.ETransaction do
 
     assert {:ok,
             Anoma.RM.Transparent.Primitive.CommitmentAccumulator.value(cms)} ==
-             Storage.read(node_id, {1, ["anoma", "transparent", "anchor"]})
+             Storage.read(node_id, {1, ["anoma", "transparent", "roots"]})
 
     EventBroker.unsubscribe_me([])
 

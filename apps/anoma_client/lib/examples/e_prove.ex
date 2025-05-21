@@ -110,8 +110,8 @@ defmodule Anoma.Client.Examples.EProve do
 
     {:ok, result, stdio} = Runner.prove(program, inputs)
 
-    assert Noun.equal?(result, <<>>)
-    assert Noun.equal?(stdio, [<<1>>, <<4>>, <<2>>, <<4>>])
+    assert Noun.equal?(result, [])
+    assert Noun.equal?(stdio, [1, 4, 2, 4])
 
     {:ok, result, stdio}
   end
@@ -148,16 +148,9 @@ defmodule Anoma.Client.Examples.EProve do
 
     {:ok, result, stdio} = Runner.prove(program, inputs)
 
-    assert Noun.equal?(result, [1, 2 | <<>>])
+    assert Noun.equal?(result, [1, 2])
 
-    assert Noun.equal?(stdio, [
-             <<1>>,
-             <<>>,
-             <<>>,
-             [<<1>> | <<>>],
-             <<1>>,
-             [<<1>>, <<2>> | <<>>]
-           ])
+    assert Noun.equal?(stdio, [1, [], [], [1], 1, [1, 2]])
 
     {:ok, result, stdio}
   end

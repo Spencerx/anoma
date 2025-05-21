@@ -1548,6 +1548,8 @@ defmodule Examples.ENock do
            |> put_with_core_call(elem2)
            |> elem(1)
            |> Noun.equal?(noun_set_new)
+
+    in_core
   end
 
   @doc """
@@ -1582,6 +1584,7 @@ defmodule Examples.ENock do
     {:ok, in_core} = in_call(set)
 
     assert in_core |> wyt_with_core_call() |> elem(1) |> Noun.equal?(4)
+    in_core
   end
 
   @doc """
@@ -1619,6 +1622,7 @@ defmodule Examples.ENock do
     # this is due to how 0 and 123 get located in set
     # test it like this since this is deterministic
     assert res |> Noun.equal?([0, 123])
+    in_core
   end
 
   @doc """
@@ -1662,6 +1666,8 @@ defmodule Examples.ENock do
            |> int_with_core_call(set2)
            |> elem(1)
            |> Noun.equal?(set_res)
+
+    in_core
   end
 
   @doc """
@@ -1705,6 +1711,8 @@ defmodule Examples.ENock do
            |> dif_with_core_call(set2)
            |> elem(1)
            |> Noun.equal?(set_res)
+
+    in_core
   end
 
   @doc """
@@ -1742,6 +1750,7 @@ defmodule Examples.ENock do
 
     assert in_core |> has_with_core_call(elem1) |> elem(1) |> Noun.equal?(0)
     assert in_core |> has_with_core_call(elem2) |> elem(1) |> Noun.equal?(1)
+    in_core
   end
 
   @doc """
@@ -1785,6 +1794,8 @@ defmodule Examples.ENock do
            |> uni_with_core_call(set2)
            |> elem(1)
            |> Noun.equal?(set_res)
+
+    in_core
   end
 
   @doc """
@@ -1831,6 +1842,8 @@ defmodule Examples.ENock do
            |> duni_with_core_call(set3)
            |> elem(1)
            |> Noun.equal?(set_res)
+
+    in_core
   end
 
   @doc """
@@ -1897,6 +1910,8 @@ defmodule Examples.ENock do
            |> mput_with_core_call("a", 3)
            |> elem(1)
            |> Noun.equal?(map_res)
+
+    by_core
   end
 
   @doc """
@@ -1934,6 +1949,8 @@ defmodule Examples.ENock do
            |> got_with_core_call("a")
            |> elem(1)
            |> Noun.equal?(1)
+
+    by_core
   end
 
   @doc """
@@ -1971,6 +1988,8 @@ defmodule Examples.ENock do
     # this is due to how 0 and 123 get located in set
     # test it like this since this is deterministic
     assert res |> Noun.equal?([[123 | "blah"]])
+
+    by_core
   end
 
   def kind_arm() do

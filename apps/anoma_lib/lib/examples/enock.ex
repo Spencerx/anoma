@@ -1802,6 +1802,52 @@ defmodule Examples.ENock do
   end
 
   @doc """
+  I represent the run gate with a specified instantiated in core given
+  as an extra argument.
+
+  Can be gotten by defining locally
+
+  =l    =>  resource-machine  |=  [a=_in b=gate]  (run:a b)
+
+  and grabbing the arm with [0 2]
+  """
+  @spec run_with_core() :: Noun.t()
+  def run_with_core() do
+    arm_info = Mugs.index_map().run
+    arm_index = arm_info.index
+
+    arm =
+      "[8 [7 [0 12] 9 #{arm_index} 0 1] 9 2 10 [6 0 29] 0 2]"
+      |> Noun.Format.parse_always()
+
+    sample = 0
+
+    [arm, sample | Nock.Lib.rm_core()]
+  end
+
+  @spec run_with_core_call(Noun.t(), Noun.t()) ::
+          :error | {:ok, Noun.t()}
+  def run_with_core_call(core, gate) do
+    Nock.nock(run_with_core(), [9, 2, 10, [6, 1 | [core | gate]], 0 | 1])
+  end
+
+  @spec run_test() :: Noun.t()
+  def run_test() do
+    set = [1, 2, 3, 4] |> MapSet.new() |> Noun.Nounable.to_noun()
+    {:ok, in_core} = in_call(set)
+    gate = [dec_arm(), 999 | Nock.Lib.rm_core()]
+
+    set_res =
+      [0, 1, 2, 3] |> MapSet.new() |> Noun.Nounable.to_noun()
+
+    {:ok, res} = in_core |> run_with_core_call(gate)
+
+    assert Noun.equal?(res, set_res)
+
+    in_core
+  end
+
+  @doc """
   I represent a has gate with a specified instantiated in core given
   as an extra argument.
 

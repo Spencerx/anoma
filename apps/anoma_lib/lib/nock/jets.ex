@@ -831,10 +831,9 @@ defmodule Nock.Jets do
 
   @spec kind(Noun.t()) :: :error | {:ok, Noun.t()}
   def kind(core) do
-    with {:ok, a} when is_noun_cell(a) <- sample(core),
-         {:ok, resource} <- Resource.from_noun(a) do
-      res = Resource.kind(resource)
-      {:ok, res}
+    with {:ok, [label | logic]}
+         when is_noun_atom(label) and is_noun_atom(logic) <- sample(core) do
+      {:ok, Resource.kind(label, logic)}
     else
       _ ->
         :error

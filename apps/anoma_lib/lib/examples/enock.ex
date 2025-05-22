@@ -2140,8 +2140,8 @@ defmodule Examples.ENock do
     |> Noun.Format.parse_always()
   end
 
-  def kind_call(resource) do
-    sample = resource
+  def kind_call(label, logic) do
+    sample = [label | logic]
     [kind_arm(), sample | Nock.Lib.rm_core()]
   end
 
@@ -2149,9 +2149,7 @@ defmodule Examples.ENock do
     resource = Examples.ETransparent.EResource.trivial_true_resource()
 
     {:ok, kind} =
-      resource
-      |> Noun.Nounable.to_noun()
-      |> kind_call
+      kind_call(resource.labelref, resource.logicref)
       |> Nock.nock([9, 2, 0 | 1])
 
     assert resource

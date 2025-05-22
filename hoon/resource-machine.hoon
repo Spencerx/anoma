@@ -165,9 +165,9 @@
   =('NF_' (~(end block 3) 3 a))
 ++  kind
   ~/  %kind
-  |=  =t-resource
+  |=  [labelref=@ logicref=@]
   ^-  @I
-  (shax (jam [labelref.t-resource logicref.t-resource]))
+  (shax (jam [labelref logicref]))
 ++  delta-add
   ~/  %delta-add
   |=  [d1=@ d2=@]
@@ -184,7 +184,7 @@
   ~/  %resource-delta
   |=  r=t-resource
   ^-  @
-  (jam (malt ~[[(kind r) quantity.r]]))
+  (jam (malt ~[[(kind labelref.r logicref.r) quantity.r]]))
 ++  action-delta
   ~/  %action-delta
   |=  =t-action

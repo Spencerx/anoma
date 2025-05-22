@@ -86,11 +86,18 @@ defmodule Anoma.RM.Transparent.Resource do
   @doc """
   I am the kind computation function for a transparent resource.
 
-  I put the label and the logic in a cell, jam it and then hash it with a
-  sha256.
+  ### Patten-Matching Variations
+
+  - kind(%Resource{}) - I call kind with the label and logic for a resource
+  - kind(label, logic) - I jam the call of [label | logic] and hash it using sha256
   """
   @spec kind(t()) :: <<_::256>>
   def kind(%Resource{labelref: label, logicref: logic}) do
+    kind(label, logic)
+  end
+
+  @spec kind(integer(), integer()) :: <<_::256>>
+  def kind(label, logic) do
     kind = [label | logic] |> Noun.Jam.jam()
     :crypto.hash(:sha256, kind)
   end

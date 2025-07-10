@@ -60,7 +60,7 @@ This let's you take advantage of the pre-installed `kino` tools, and lets you ge
 This can be achieved by click on runtime settings:
 
 <div>
-<img src="./files/writing-docs-configure-system.png" width="300" >
+<img src="./files/writing-docs-configure-system.png" width="300" />
 </div>
 
 From here, click on configure and connect it to your running Anoma instance.

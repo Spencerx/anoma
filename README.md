@@ -84,7 +84,7 @@ brew install elixir cmake protobuf git
 Dependencies that you might not have installed.
 
 ```shell
-apt install cmake
+apt install cmake libwxgtk3.2-dev
 ```
 
 ---

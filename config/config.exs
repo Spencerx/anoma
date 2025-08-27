@@ -13,7 +13,11 @@ config :anoma_client, Anoma.Client.Web.Endpoint,
   server: true,
   adapter: Bandit.PhoenixAdapter,
   http: [
-    ip: {0, 0, 0, 0},
+    ip:
+      System.get_env("CLIENT_HTTP_IP", "0.0.0.0")
+      |> String.to_charlist()
+      |> :inet.parse_address()
+      |> elem(1),
     port: String.to_integer(System.get_env("CLIENT_HTTP_PORT") || "4000")
   ],
   check_origin: true,

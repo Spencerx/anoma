@@ -109,5 +109,7 @@ defmodule Anoma.Protobuf.ErrorHandler do
     |> Enum.map(fn {field, errors} ->
       "#{inspect(field)} #{error_message(errors)}"
     end)
+    |> Enum.intersperse("\n")
+    |> Enum.join()
   end
 end

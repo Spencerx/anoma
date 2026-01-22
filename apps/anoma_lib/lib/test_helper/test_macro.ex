@@ -15,7 +15,6 @@ defmodule TestHelper.TestMacro do
   defmacro __using__(opts) do
     quote do
       require ExUnit.Assertions
-      require ExUnit.Assertions
       require TestMacro
 
       import ExUnit.Assertions, only: [flunk: 1]

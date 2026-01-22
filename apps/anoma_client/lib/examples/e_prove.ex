@@ -63,7 +63,7 @@ defmodule Anoma.Client.Examples.EProve do
 
     {:ok, result, _stdio} = Runner.prove(program, inputs)
 
-    assert result == 9
+    assert Noun.equal?(result, 9)
 
     {:ok, result}
   end
@@ -80,7 +80,7 @@ defmodule Anoma.Client.Examples.EProve do
 
     {:ok, result, _stdio} = Runner.prove(program, inputs)
 
-    assert result == 0
+    assert Noun.equal?(result, 0)
 
     {:ok, result}
   end
@@ -96,7 +96,7 @@ defmodule Anoma.Client.Examples.EProve do
     inputs = Enum.map(["3"], &Noun.Format.parse_always/1)
     {:ok, result, _stdio} = Runner.prove(program, inputs)
 
-    assert result == 9
+    assert Noun.equal?(result, 9)
 
     result
   end
@@ -113,8 +113,8 @@ defmodule Anoma.Client.Examples.EProve do
 
     {:ok, result, stdio} = Runner.prove(program, inputs)
 
-    assert result == <<>>
-    assert stdio == [<<1>>, <<4>>, <<2>>, <<4>>]
+    assert Noun.equal?(result, [])
+    assert Noun.equal?(stdio, [1, 4, 2, 4])
 
     {:ok, result, stdio}
   end
@@ -132,8 +132,8 @@ defmodule Anoma.Client.Examples.EProve do
 
     {:ok, result, stdio} = Runner.prove(program, inputs)
 
-    assert result == 3
-    assert stdio == ["abc"]
+    assert Noun.equal?(result, 3)
+    assert Noun.equal?(stdio, ["abc"])
 
     {:ok, result, stdio}
   end
@@ -151,16 +151,9 @@ defmodule Anoma.Client.Examples.EProve do
 
     {:ok, result, stdio} = Runner.prove(program, inputs)
 
-    assert result == [1, 2 | <<>>]
+    assert Noun.equal?(result, [1, 2])
 
-    assert stdio == [
-             <<1>>,
-             <<>>,
-             <<>>,
-             [<<1>> | <<>>],
-             <<1>>,
-             [<<1>>, <<2>> | <<>>]
-           ]
+    assert Noun.equal?(stdio, [1, [], [], [1], 1, [1, 2]])
 
     {:ok, result, stdio}
   end

@@ -14,7 +14,7 @@ defmodule Anoma.Client.Examples.EProve do
 
   This program fails to run.
   """
-  @spec run_div_by_zero() :: {:ok, :error, []}
+  @spec run_div_by_zero() :: {Noun.t(), [binary()]}
   def run_div_by_zero() do
     {:ok, program} =
       :code.priv_dir(:anoma_client)
@@ -25,7 +25,7 @@ defmodule Anoma.Client.Examples.EProve do
     assert {:error, :failed_to_prove, {:jet_failed, {:div, _}}, []} =
              Runner.prove(program, [])
 
-    {:ok, :error, []}
+    {program, []}
   end
 
   @doc """
@@ -33,7 +33,7 @@ defmodule Anoma.Client.Examples.EProve do
 
   This program returns traces before failing and these traces should be returned.
   """
-  @spec run_div_by_zero_with_trace() :: {:ok, :error, [binary()]}
+  @spec run_div_by_zero_with_trace() :: {Noun.t(), [binary()]}
   def run_div_by_zero_with_trace() do
     {:ok, program} =
       :code.priv_dir(:anoma_client)
@@ -44,13 +44,13 @@ defmodule Anoma.Client.Examples.EProve do
     assert {:error, :failed_to_prove, :instruction_match_error, ["A"]} =
              Runner.prove(program, [])
 
-    {:ok, :error, ["A"]}
+    {program, ["A"]}
   end
 
   @doc """
   I run the Juvix program "Squared" using the prove function.
   """
-  @spec prove_squared() :: {:ok, Noun.t()} | :error
+  @spec prove_squared() :: Noun.t()
   def prove_squared() do
     {:ok, program} =
       :code.priv_dir(:anoma_client)
@@ -65,10 +65,10 @@ defmodule Anoma.Client.Examples.EProve do
 
     assert Noun.equal?(result, 9)
 
-    {:ok, result}
+    program
   end
 
-  @spec squared_without_arguments() :: {:ok, Noun.t()} | :error
+  @spec squared_without_arguments() :: Noun.t()
   def squared_without_arguments() do
     {:ok, program} =
       :code.priv_dir(:anoma_client)
@@ -82,10 +82,10 @@ defmodule Anoma.Client.Examples.EProve do
 
     assert Noun.equal?(result, 0)
 
-    {:ok, result}
+    program
   end
 
-  @spec prove_squared_small() :: any()
+  @spec prove_squared_small() :: Noun.t()
   def prove_squared_small() do
     # jammed base64 encoded square function that takes in one parameter
     {:ok, program} =
@@ -98,10 +98,10 @@ defmodule Anoma.Client.Examples.EProve do
 
     assert Noun.equal?(result, 9)
 
-    result
+    program
   end
 
-  @spec prove_with_hints() :: {:ok, Noun.t(), [String.t()]} | :error
+  @spec prove_with_hints() :: Noun.t()
   def prove_with_hints() do
     {:ok, program} =
       :code.priv_dir(:anoma_client)
@@ -116,10 +116,10 @@ defmodule Anoma.Client.Examples.EProve do
     assert Noun.equal?(result, [])
     assert Noun.equal?(stdio, [1, 4, 2, 4])
 
-    {:ok, result, stdio}
+    program
   end
 
-  @spec prove_with_hint() :: {:ok, any(), any()}
+  @spec prove_with_hint() :: Noun.t()
   def prove_with_hint() do
     {:ok, program} =
       :code.priv_dir(:anoma_client)
@@ -135,10 +135,10 @@ defmodule Anoma.Client.Examples.EProve do
     assert Noun.equal?(result, 3)
     assert Noun.equal?(stdio, ["abc"])
 
-    {:ok, result, stdio}
+    program
   end
 
-  @spec prove_with_cell_hint() :: {:ok, any(), any()}
+  @spec prove_with_cell_hint() :: Noun.t()
   def prove_with_cell_hint() do
     {:ok, program} =
       :code.priv_dir(:anoma_client)
@@ -155,7 +155,7 @@ defmodule Anoma.Client.Examples.EProve do
 
     assert Noun.equal?(stdio, [1, [], [], [1], 1, [1, 2]])
 
-    {:ok, result, stdio}
+    program
   end
 
   @spec square_endpoint_call() :: binary()

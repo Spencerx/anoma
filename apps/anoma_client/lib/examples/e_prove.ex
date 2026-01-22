@@ -5,8 +5,7 @@ defmodule Anoma.Client.Examples.EProve do
   I test and run nock programs and verify their outputs.
   """
   alias Anoma.Client.Runner
-  alias Anoma.Node.Tables
-  alias Anoma.Node.Transaction.Storage, as: NodeStorage
+  alias Anoma.Tables
 
   require ExUnit.Assertions
   import ExUnit.Assertions
@@ -175,9 +174,10 @@ defmodule Anoma.Client.Examples.EProve do
     val = MapSet.new(["i am a set"])
     key = ["anoma", "blob", "key"]
 
-    NodeStorage.write(
+    Anoma.Node.Transaction.Shard.Supervisor.start_shard(
       client.node.node_id,
-      {1, [{key, val}]}
+      key,
+      val
     )
 
     program = [[12, [1], 1 | ["id" | key]]]

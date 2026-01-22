@@ -192,13 +192,13 @@ defmodule Anoma.Node.Transaction.Backends do
         end
 
       old_cms =
-        case Ordering.read(node_id, {id, anoma_keyspace("commitments")}) do
+        case Ordering.read(node_id, {id, transparent_keyspace("commitments")}) do
           :absent -> MapSet.new()
           {:ok, res} -> res
         end
 
       writes = [
-        {anoma_keyspace("anchor"),
+        {transparent_keyspace("anchor"),
          TAcc.value(
            MapSet.union(
              map.commitments,
@@ -213,8 +213,8 @@ defmodule Anoma.Node.Transaction.Backends do
         {id,
          %{
            append: [
-             {anoma_keyspace("nullifiers"), map.nullifiers},
-             {anoma_keyspace("commitments"), map.commitments}
+             {transparent_keyspace("nullifiers"), map.nullifiers},
+             {transparent_keyspace("commitments"), map.commitments}
            ],
            write: writes
          }}
@@ -251,13 +251,13 @@ defmodule Anoma.Node.Transaction.Backends do
           true | {:error, String.t()}
   defp storage_check(node_id, id, trans) do
     stored_commitments =
-      case Ordering.read(node_id, {id, anoma_keyspace("commitments")}) do
+      case Ordering.read(node_id, {id, transparent_keyspace("commitments")}) do
         :absent -> MapSet.new()
         {:ok, res} -> res
       end
 
     stored_nullifiers =
-      case Ordering.read(node_id, {id, anoma_keyspace("nullifiers")}) do
+      case Ordering.read(node_id, {id, transparent_keyspace("nullifiers")}) do
         :absent -> MapSet.new()
         {:ok, res} -> res
       end
@@ -323,7 +323,7 @@ defmodule Anoma.Node.Transaction.Backends do
              :mnesia.transaction(fn ->
                :mnesia.match_object(
                  {Storage.values_table(node_id),
-                  {:_, anoma_keyspace("anchor")}, root}
+                  {:_, transparent_keyspace("anchor")}, root}
                )
              end) do
         {:cont, acc}
@@ -377,7 +377,7 @@ defmodule Anoma.Node.Transaction.Backends do
          # No need to check the commitment existence
          true <- nullifier_existence_check(tx, node_id, id) do
       {ct, append_roots} =
-        case Ordering.read(node_id, {id, anoma_keyspace("cairo_ct")}) do
+        case Ordering.read(node_id, {id, cairo_keyspace("ct")}) do
           :absent ->
             {CTransaction.cm_tree(),
              MapSet.new([Anoma.Constants.default_cairo_rm_root()])}
@@ -404,8 +404,7 @@ defmodule Anoma.Node.Transaction.Backends do
               Noun.equal?(deletion, <<1::256>>)
             end)
             |> Enum.map(fn {value, _} ->
-              {["anoma", "blob", "cairo", :crypto.hash(:sha256, value)],
-               value}
+              {["anoma", "blob", :crypto.hash(:sha256, value)], value}
             end)
           end)
         end)
@@ -415,12 +414,11 @@ defmodule Anoma.Node.Transaction.Backends do
         {id,
          %{
            append: [
-             {anoma_keyspace("cairo_nullifiers"), nullifiers},
-             {anoma_keyspace("cairo_roots"),
-              MapSet.put(append_roots, anchor)},
-             {anoma_keyspace("cairo_ciphertexts"), ciphertexts}
+             {cairo_keyspace("nullifiers"), nullifiers},
+             {cairo_keyspace("roots"), MapSet.put(append_roots, anchor)},
+             {cairo_keyspace("ciphertexts"), ciphertexts}
            ],
-           write: [{anoma_keyspace("cairo_ct"), ct_new} | write_app_data]
+           write: [{cairo_keyspace("ct"), ct_new} | write_app_data]
          }}
       )
 
@@ -447,7 +445,7 @@ defmodule Anoma.Node.Transaction.Backends do
           true | {:error, String.t()}
   def nullifier_existence_check(transaction, node_id, id) do
     with {:ok, stored_nullifiers} <-
-           Ordering.read(node_id, {id, anoma_keyspace("cairo_nullifiers")}) do
+           Ordering.read(node_id, {id, cairo_keyspace("nullifiers")}) do
       if Enum.any?(
            CTransaction.nullifiers(transaction),
            &MapSet.member?(stored_nullifiers, &1)
@@ -466,7 +464,7 @@ defmodule Anoma.Node.Transaction.Backends do
           true | {:error, String.t()}
   def root_existence_check(transaction, node_id, id) do
     stored_roots =
-      case Ordering.read(node_id, {id, anoma_keyspace("cairo_roots")}) do
+      case Ordering.read(node_id, {id, cairo_keyspace("roots")}) do
         :absent -> MapSet.new([Anoma.Constants.default_cairo_rm_root()])
         {:ok, val} -> val
       end
@@ -545,8 +543,18 @@ defmodule Anoma.Node.Transaction.Backends do
     EventBroker.event(event)
   end
 
-  @spec anoma_keyspace(String.t()) :: list(String.t())
+  @spec cairo_keyspace(String.t()) :: list(String.t())
+  defp cairo_keyspace(key) do
+    anoma_keyspace(["cairo", key])
+  end
+
+  @spec transparent_keyspace(String.t()) :: list(String.t())
+  defp transparent_keyspace(key) do
+    anoma_keyspace(["transparent", key])
+  end
+
+  @spec anoma_keyspace(list(String.t())) :: list(String.t())
   defp anoma_keyspace(key) do
-    ["anoma", key]
+    ["anoma" | key]
   end
 end

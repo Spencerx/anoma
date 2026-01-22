@@ -1,6 +1,6 @@
 <!-- livebook:{"persist_outputs":true} -->
 
-# Contributing
+# Load Test
 
 ## Index
 1. [Toc](./toc.livemd)
@@ -27,8 +27,7 @@
 7. [Loadtest](./loadtest.livemd)
    1. [Event_broker](./loadtest/event_broker.livemd)
 
-## Contributing
+## About This Guide
 
-Documents in this section cover getting started and contributing back to `Anoma`.
-
-Please feel free to contribute to these docs and improve them! For tips on how to write documents, please refer to the [Writing Documents](./contributing/writing-documents.livemd)
+This guide will help you understand the load the system can endure.
+Each load test examines one part of the system.

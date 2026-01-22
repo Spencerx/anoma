@@ -24,6 +24,8 @@
    3. [Setting Up](./../hoon/setting-up.livemd)
 5. [Analysis](./../analysis.livemd)
 6. [Jam](./../jam.livemd)
+7. [Loadtest](./../loadtest.livemd)
+   1. [Event_broker](./../loadtest/event_broker.livemd)
 
 ## Where should state be stored
 

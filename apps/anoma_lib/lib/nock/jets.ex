@@ -855,6 +855,22 @@ defmodule Nock.Jets do
     end
   end
 
+  @spec run(Noun.t()) :: {:error, error()} | {:ok, Noun.t()}
+  def run(core) do
+    with {:ok, gate} <- sample(core),
+         {:ok, door_set} <- Noun.axis(30, core),
+         {:ok, set} <- Noun.Nounable.MapSet.from_noun(door_set),
+         res <-
+           Enum.map(set, fn elem ->
+             {:ok, res} = Nock.nock(gate, [9, 2, 10, [6, 1 | elem], 0 | 1])
+             res
+           end) do
+      {:ok, res |> MapSet.new() |> Noun.Nounable.to_noun()}
+    else
+      _ -> {:error, {:run, core}}
+    end
+  end
+
   @spec mput(Noun.t()) :: {:error, error()} | {:ok, Noun.t()}
   def mput(core) do
     with {:ok, [key | value]} <- sample(core),

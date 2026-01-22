@@ -87,6 +87,10 @@ defmodule Anoma.Node.Transaction.Executor do
       %Backends.Events.CompleteFilter{}
     ])
 
+    EventBroker.subscribe_me([
+      %Mempool.Events.BlockFilter{}
+    ])
+
     state = struct(__MODULE__, Enum.into(args, %{}))
     {:ok, state}
   end
@@ -143,6 +147,11 @@ defmodule Anoma.Node.Transaction.Executor do
     {:noreply, state}
   end
 
+  @impl true
+  def handle_info(_, state) do
+    {:noreply, state}
+  end
+
   ############################################################
   #                 Genserver Implementation                 #
   ############################################################
@@ -175,6 +184,8 @@ defmodule Anoma.Node.Transaction.Executor do
       |> Enum.reverse()
 
     execution_event(res_list, node_id)
+
+    res_list |> Enum.map(&elem(&1, 1)) |> listen_for_block_finish!()
   end
 
   ############################################################
@@ -194,6 +205,20 @@ defmodule Anoma.Node.Transaction.Executor do
         }
       } ->
         {res, id}
+    end
+  end
+
+  @spec listen_for_worker_finish!(integer()) :: :ok
+  defp listen_for_block_finish!(list) do
+    receive do
+      %EventBroker.Event{
+        body: %Node.Event{
+          body: %Mempool.Events.BlockEvent{
+            order: ^list
+          }
+        }
+      } ->
+        :ok
     end
   end
 

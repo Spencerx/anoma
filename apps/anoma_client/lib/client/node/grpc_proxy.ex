@@ -164,6 +164,6 @@ defmodule Anoma.Client.Node.GRPCProxy do
   @impl true
   # the connection to the remote node was closed.
   def handle_info({:gun_down, _pid, :http2, :closed, []}, state) do
-    {:stop, :disonnect, state}
+    {:stop, :disconnect, state}
   end
 end

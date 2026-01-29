@@ -27,7 +27,7 @@ defmodule Anoma.Node.Transport.GRPC.Servers.Mempool do
 
     noun = if request.wrap, do: wrap_transaction(noun), else: noun
 
-    transaction = {request.transaction_type, noun}
+    transaction = noun
 
     # submit the transaction to the mempool
     node_id = request.node.id

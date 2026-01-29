@@ -114,6 +114,24 @@ defmodule Anoma.Node.Examples.ESolver do
     assert [] == Solver.get_unsolved(node_id)
 
     tx = Examples.ETransparent.ETransaction.swap_from_actions()
+    tx_noun = tx |> Noun.Nounable.to_noun()
+
+    tx_candidate = [
+      [
+        1,
+        [
+          0
+          | [
+              ["anoma", "transparent", "anchor"],
+              ["anoma", "transparent", "nullifiers"],
+              ["anoma", "transparent", "commitments"]
+            ]
+        ],
+        [1 | tx_noun],
+        0 | 909
+      ],
+      0 | 707
+    ]
 
     tx_filter = [
       Anoma.Node.Event.node_filter(node_id),
@@ -134,6 +152,9 @@ defmodule Anoma.Node.Examples.ESolver do
             }
           } ->
             :ok
+
+          msg ->
+            msg
         after
           1000 -> :error
         end

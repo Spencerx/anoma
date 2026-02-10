@@ -1,6 +1,7 @@
 defmodule Anoma.Node.Examples.ETransaction do
   alias Anoma.Node
   alias Anoma.Node.Examples.ENode
+  alias Anoma.Node.Registry
   alias Anoma.Node.Transaction.Backends
   alias Anoma.Node.Transaction.Backends.Events.ROEvent
   alias Anoma.Node.Transaction.Mempool
@@ -799,5 +800,33 @@ defmodule Anoma.Node.Examples.ETransaction do
     })
 
     Ordering.write(node_id, {tx_id, [{opts[:key], opts[:value]}]})
+  end
+
+  @doc """
+  I verify that `Ordering.reserve/3` for a purely read-only
+  transaction preserves the reservation and shard addresses in
+  Ordering state.
+  """
+  @spec read_only_reserve_preserves_state(String.t()) :: String.t()
+  def read_only_reserve_preserves_state(node_id \\ Node.example_random_id()) do
+    ENode.start_node(node_id: node_id)
+
+    tx = random_transaction_id()
+
+    Ordering.reserve(node_id, tx, %{
+      read: MapSet.new([["new_key"]]),
+      write: MapSet.new([])
+    })
+
+    ordering_state =
+      Registry.via(node_id, Ordering) |> :sys.get_state()
+
+    assert Map.has_key?(ordering_state.reservations, tx),
+           "reservation for read-only tx must be in state"
+
+    assert Map.has_key?(ordering_state.shard_addresses, ["new_key"]),
+           "shard address for read key must be in state"
+
+    node_id
   end
 end

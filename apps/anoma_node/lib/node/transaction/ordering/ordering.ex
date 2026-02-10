@@ -288,7 +288,7 @@ defmodule Anoma.Node.Transaction.Ordering do
 
   def handle_call({:commit, round, writes, ids}, from, state) do
     handle_commit(round, writes, ids, from, state)
-    {:reply, :ok, state}
+    {:noreply, state}
   end
 
   def handle_call(_msg, _from, state) do
@@ -381,9 +381,9 @@ defmodule Anoma.Node.Transaction.Ordering do
            noun_writes}
         )
       end)
-    end
 
-    :ok
+      GenServer.reply(from, :ok)
+    end
   end
 
   @spec handle_order(list(binary()), t()) :: t()

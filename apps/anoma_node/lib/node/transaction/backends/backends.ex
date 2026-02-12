@@ -333,6 +333,8 @@ defmodule Anoma.Node.Transaction.Backends do
     end)
   end
 
+  @spec emit_value(String.t(), binary(), :error | Noun.t()) ::
+          {:ok, Noun.t()} | :error
   def emit_value(node_id, id, result) do
     wrapped_result =
       case result do
@@ -347,6 +349,7 @@ defmodule Anoma.Node.Transaction.Backends do
       })
 
     EventBroker.event(event)
+    wrapped_result
   end
 
   @spec store_value(String.t(), binary(), Noun.t()) :: {:ok, any} | :error

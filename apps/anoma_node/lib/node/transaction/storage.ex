@@ -206,8 +206,8 @@ defmodule Anoma.Node.Transaction.Storage do
             GenServer.reply(from, {:ok, value})
         end
 
-      _ ->
-        IO.puts("this should be unreachable")
+      unexpected ->
+        GenServer.reply(from, {:error, {:unexpected_event, unexpected}})
     end
 
     EventBroker.unsubscribe_me([

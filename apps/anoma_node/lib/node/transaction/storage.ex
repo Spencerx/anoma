@@ -46,9 +46,7 @@ defmodule Anoma.Node.Transaction.Storage do
       end
 
       for {key, value} <- state.uncommitted_updates do
-        {:atomic, res} =
-          fn -> :mnesia.read(__MODULE__.Updates, key) end
-          |> :mnesia.transaction()
+        res = :mnesia.read(__MODULE__.Updates, key)
 
         new_updates =
           case res do
@@ -61,7 +59,7 @@ defmodule Anoma.Node.Transaction.Storage do
       end
     end
 
-    :mnesia.transaction(mnesia_tx)
+    {:atomic, _} = :mnesia.transaction(mnesia_tx)
     {:reply, :ok, %__MODULE__{uncommitted_height: state.uncommitted_height}}
   end
 

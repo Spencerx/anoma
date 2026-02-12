@@ -321,6 +321,7 @@ defmodule Anoma.Node.Transaction.Storage do
           case read_in_past(height, key, state) do
             :absent -> MapSet.new()
             {:ok, res} -> res
+            :error -> MapSet.new()
           end
 
         res ->

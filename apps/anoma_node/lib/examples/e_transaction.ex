@@ -1,10 +1,12 @@
 defmodule Anoma.Node.Examples.ETransaction do
   alias Anoma.Node
   alias Anoma.Node.Examples.ENode
+  alias Anoma.Node.Registry
   alias Anoma.Node.Transaction.Backends
   alias Anoma.Node.Transaction.Backends.Events.ROEvent
   alias Anoma.Node.Transaction.Mempool
   alias Anoma.Node.Transaction.Ordering
+  alias Anoma.Node.Transaction.Shard
   alias Anoma.Node.Transaction.Storage
   alias Anoma.Tables
   alias Anoma.RM.Transparent.Transaction
@@ -799,5 +801,50 @@ defmodule Anoma.Node.Examples.ETransaction do
     })
 
     Ordering.write(node_id, {tx_id, [{opts[:key], opts[:value]}]})
+  end
+
+  @doc """
+  I verify that shard watermarks advance for keys that are only
+  read (not written) within a block.
+
+  Two transactions each read key ["a"] but write to different keys.
+  After ordering, the shard for ["a"] should have its write
+  watermark advanced so that reads at the block height proceed.
+  """
+  @spec watermark_advances_for_read_only_keys(String.t()) :: String.t()
+  def watermark_advances_for_read_only_keys(
+        node_id \\ Node.example_random_id()
+      ) do
+    ENode.start_node(node_id: node_id)
+
+    tx1 = random_transaction_id()
+    tx2 = random_transaction_id()
+
+    Ordering.reserve(node_id, tx1, %{
+      read: MapSet.new([["a"]]),
+      write: MapSet.new([["b"]])
+    })
+
+    Ordering.reserve(node_id, tx2, %{
+      read: MapSet.new([["a"]]),
+      write: MapSet.new([["c"]])
+    })
+
+    Ordering.order(node_id, [tx1, tx2])
+
+    # Synchronise: ensure Ordering has processed all casts so the
+    # shard for ["a"] exists before we try to read from it.
+    Registry.via(node_id, Ordering) |> :sys.get_state()
+
+    shard_a = Registry.via(node_id, Shard, :a)
+
+    # Cell.read blocks when height > watermark.write + 1.
+    # The watermark should be at 1 (order-1 of the last read),
+    # so reading at height 2 resolves immediately.
+    read_task = Task.async(fn -> Shard.read(shard_a, ["a"], 2) end)
+
+    assert Task.await(read_task, 2000) == :absent
+
+    node_id
   end
 end

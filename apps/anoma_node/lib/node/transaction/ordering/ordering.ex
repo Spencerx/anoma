@@ -581,10 +581,12 @@ defmodule Anoma.Node.Transaction.Ordering do
   end
 
   @spec handle_advance_watermark([{flag(), any()}], any(), pid()) :: any()
+  defp handle_advance_watermark([], _key, _pid), do: []
+
   defp handle_advance_watermark(block_list, key, pid) do
     Enum.reduce_while(
       block_list,
-      block_list,
+      tl(block_list),
       fn
         {:read, order}, [] ->
           # if no further keys, advance to the last read of the block
@@ -598,7 +600,7 @@ defmodule Anoma.Node.Transaction.Ordering do
         {:write, order}, acc ->
           # if we hit a write, advance watermark to it directly
           Shard.advance_watermark(pid, key, order - 1)
-          {:halt, acc}
+          {:halt, [{:write, order} | acc]}
       end
     )
   end

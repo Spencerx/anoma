@@ -445,9 +445,9 @@ defmodule Anoma.Node.Transaction.Ordering do
       # store the tx at that height without advancing the order
       # this guaranees referential transparency
       %__MODULE__{
-        state
+        new_state
         | tx_id_to_height:
-            Map.put(state.tx_id_to_height, tx_id, state.next_height)
+            Map.put(new_state.tx_id_to_height, tx_id, new_state.next_height)
       }
     end
   end

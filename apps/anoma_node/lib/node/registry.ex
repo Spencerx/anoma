@@ -105,6 +105,7 @@ defmodule Anoma.Node.Registry do
     |> Enum.sort()
   end
 
+  @spec match(String.t(), atom()) :: [Address.t()]
   def match(node_id, engine) do
     pattern = {%{node_id: :"$1", engine: :"$2"}, :"$3", :"$4"}
 

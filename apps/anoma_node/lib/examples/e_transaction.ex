@@ -263,12 +263,12 @@ defmodule Anoma.Node.Examples.ETransaction do
     ENode.start_node(node_id: node_id)
   end
 
-  @spec zero(String.t()) :: Noun.t()
+  @spec zero(String.t(), Noun.t()) :: Noun.t()
   def zero(key \\ "key", writes \\ [["key"]]) do
     Examples.ENock.zero(key, writes)
   end
 
-  @spec inc(String.t()) :: Noun.t()
+  @spec inc(String.t(), Noun.t()) :: Noun.t()
   def inc(key \\ "key", writes \\ [["key"]]) do
     Examples.ENock.inc(key, writes)
   end
@@ -785,6 +785,8 @@ defmodule Anoma.Node.Examples.ETransaction do
     end
   end
 
+  @spec reserve_and_do(:read | :write, String.t(), binary(), keyword()) ::
+          any()
   def reserve_and_do(:read, node_id, tx_id, opts) do
     Ordering.reserve(node_id, tx_id, %{
       read: MapSet.new([opts[:key]]),

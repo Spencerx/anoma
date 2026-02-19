@@ -76,14 +76,17 @@ defmodule Anoma.Node.Transport.Proxy.TransportProtocol do
   #                      Public RPC API                      #
   ############################################################
 
+  @spec call(GenServer.server(), term()) :: term()
   def call(transport_protocol, message) do
     GenServer.call(transport_protocol, {:call, message})
   end
 
+  @spec cast(GenServer.server(), term()) :: :ok
   def cast(transport_protocol, message) do
     GenServer.cast(transport_protocol, {:cast, message})
   end
 
+  @spec event(GenServer.server(), term()) :: :ok
   def event(transport_protocol, event) do
     GenServer.cast(transport_protocol, {:event, event})
   end

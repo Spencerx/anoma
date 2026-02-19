@@ -216,11 +216,13 @@ defmodule Anoma.CairoResource.Transaction do
         output_logics,
         output_witnesses
       ) do
-    with input_resource_jsons =
-           Enum.map(compliance_units, & &1["input"]),
-         output_resource_jsons =
-           Enum.map(compliance_units, & &1["output"]),
-         {:ok, input_nf_keys} <-
+    input_resource_jsons =
+      Enum.map(compliance_units, & &1["input"])
+
+    output_resource_jsons =
+      Enum.map(compliance_units, & &1["output"])
+
+    with {:ok, input_nf_keys} <-
            Enum.map(
              compliance_units,
              &Utils.parse_json_field_to_binary32(&1, "input_nf_key")

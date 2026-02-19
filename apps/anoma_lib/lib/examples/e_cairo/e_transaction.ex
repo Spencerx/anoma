@@ -109,6 +109,10 @@ defmodule Examples.ECairo.ETransaction do
       )
 
     compliance_units_raw = [compliance1_inputs, compliance2_inputs]
+    input_logics = [resource_logic, resource_logic]
+    input_witnesses_raw = [witness, witness]
+    output_logics = [resource_logic, resource_logic]
+    output_witnesses_raw = [witness, witness]
 
     with {:ok, compliance_units} <-
            Enum.map(
@@ -116,16 +120,12 @@ defmodule Examples.ECairo.ETransaction do
              &Jason.decode(&1, objects: :ordered_objects)
            )
            |> Utils.check_list(),
-         input_logics = [resource_logic, resource_logic],
-         input_witnesses_raw = [witness, witness],
          {:ok, input_witnesses} <-
            Enum.map(
              input_witnesses_raw,
              &Jason.decode(&1, objects: :ordered_objects)
            )
            |> Utils.check_list(),
-         output_logics = [resource_logic, resource_logic],
-         output_witnesses_raw = [witness, witness],
          {:ok, output_witnesses} <-
            Enum.map(
              output_witnesses_raw,
@@ -139,8 +139,8 @@ defmodule Examples.ECairo.ETransaction do
              input_witnesses,
              output_logics,
              output_witnesses
-           ),
-         shielded_tx = Transaction.prove_delta(pre_tx) do
+           ) do
+      shielded_tx = Transaction.prove_delta(pre_tx)
       assert true == Transaction.verify(shielded_tx)
 
       shielded_tx
@@ -193,7 +193,7 @@ defmodule Examples.ECairo.ETransaction do
     invalid_shielded_tx
   end
 
-  @spec shielded_transaction_cipher_texts() :: [
+  @spec shielded_transaction_cipher_texts(binary()) :: [
           %{cipher: list(), tag: binary()}
         ]
   def shielded_transaction_cipher_texts(decryption_key \\ <<1::256>>) do

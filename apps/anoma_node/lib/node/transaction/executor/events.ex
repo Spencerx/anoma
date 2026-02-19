@@ -41,7 +41,8 @@ defmodule Anoma.Node.Transaction.Executor.Events do
   ############################################################
 
   defimpl Jason.Encoder, for: ExecutionEvent do
-    def encode(%ExecutionEvent{} = event, opts) do
+    @spec encode(ExecutionEvent.t(), Jason.Encode.opts()) :: iodata()
+    def encode(event = %ExecutionEvent{}, opts) do
       event
       |> Map.update!(
         :result,

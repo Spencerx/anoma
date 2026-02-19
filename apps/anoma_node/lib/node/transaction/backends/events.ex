@@ -62,6 +62,7 @@ defmodule Anoma.Node.Transaction.Backends.Events do
 
   # todo: where to put this?
   defimpl Jason.Encoder, for: MapSet do
+    @spec encode(MapSet.t(), Jason.Encode.opts()) :: iodata()
     def encode(mapset, opts) do
       Jason.Encode.list(Enum.into(mapset, []), opts)
     end
@@ -110,22 +111,21 @@ defmodule Anoma.Node.Transaction.Backends.Events do
     end
 
     defp encode_maybe_noun(noun) do
-      with jammed <- Noun.Jam.jam(noun),
-           encoded <- Base.encode64(jammed) do
-        encoded
-      end
+      jammed = Noun.Jam.jam(noun)
+      Base.encode64(jammed)
     end
 
-    def encode(%ROEvent{} = event, opts) do
-      with vm_result <- encode_maybe_noun(event.read_result) do
-        Jason.Encode.map(
-          %{
-            tx_id: event.tx_id,
-            read_result: vm_result
-          },
-          opts
-        )
-      end
+    @spec encode(ROEvent.t(), Jason.Encode.opts()) :: iodata()
+    def encode(event = %ROEvent{}, opts) do
+      vm_result = encode_maybe_noun(event.read_result)
+
+      Jason.Encode.map(
+        %{
+          tx_id: event.tx_id,
+          read_result: vm_result
+        },
+        opts
+      )
     end
   end
 
@@ -162,7 +162,8 @@ defmodule Anoma.Node.Transaction.Backends.Events do
   ############################################################
 
   defimpl Jason.Encoder, for: CompleteEvent do
-    def encode(%CompleteEvent{} = event, opts) do
+    @spec encode(CompleteEvent.t(), Jason.Encode.opts()) :: iodata()
+    def encode(event = %CompleteEvent{}, opts) do
       event
       |> Map.update!(:tx_result, fn
         :error ->
@@ -182,7 +183,8 @@ defmodule Anoma.Node.Transaction.Backends.Events do
   end
 
   defimpl Jason.Encoder, for: ResultEvent do
-    def encode(%ResultEvent{} = event, opts) do
+    @spec encode(ResultEvent.t(), Jason.Encode.opts()) :: iodata()
+    def encode(event = %ResultEvent{}, opts) do
       event
       |> Map.update!(:vm_result, fn
         :error ->

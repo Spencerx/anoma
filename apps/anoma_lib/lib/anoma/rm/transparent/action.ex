@@ -132,9 +132,9 @@ defmodule Anoma.RM.Transparent.Action do
     # 3
     with true <- cu_check(t),
          # Extra
-         {:ok, _} <- is_list_unique(t.consumed),
+         {:ok, _} <- list_unique?(t.consumed),
          # Extra
-         {:ok, _} <- is_list_unique(t.created),
+         {:ok, _} <- list_unique?(t.created),
          # Extra
          {:ok, true} <- partition_check(t),
          # 2
@@ -293,8 +293,8 @@ defmodule Anoma.RM.Transparent.Action do
     )
   end
 
-  @spec is_list_unique(list()) :: {:ok, list()} | {:error, String.t()}
-  defp is_list_unique(list) do
+  @spec list_unique?(list()) :: {:ok, list()} | {:error, String.t()}
+  defp list_unique?(list) do
     Enum.reduce_while(list, {:ok, []}, fn elem, {:ok, acc} ->
       unless Enum.any?(acc, fn x -> x == elem end) do
         {:cont, {:ok, [elem | acc]}}

@@ -142,6 +142,7 @@ defmodule Anoma.Node.Examples.EIntentPool do
     enode
   end
 
+  @spec intents_are_written(ENode.t()) :: {:atomic, list()}
   def intents_are_written(enode \\ ENode.start_node()) do
     add_intent_transaction_nullifier(enode)
 

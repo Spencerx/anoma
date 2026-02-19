@@ -1,6 +1,7 @@
 defmodule Anoma.Client.Web.FallbackController do
   use Phoenix.Controller
 
+  @spec call(Plug.Conn.t(), term()) :: Plug.Conn.t()
   def call(conn, {:error, :failed_to_fetch_intents}) do
     conn
     |> put_status(503)

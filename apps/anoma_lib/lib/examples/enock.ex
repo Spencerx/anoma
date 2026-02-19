@@ -57,7 +57,7 @@ defmodule Examples.ENock do
 
   #### Term Examples
 
-  @spec zero(Noun.t()) :: Noun.t()
+  @spec zero(Noun.t(), Noun.t()) :: Noun.t()
   def zero(key \\ "key", writes \\ [["key"]]) do
     zero_counter_arm = [1, [key] | 0]
     arm = [10, [2 | zero_counter_arm], 1, 0 | 0]
@@ -1327,13 +1327,13 @@ defmodule Examples.ENock do
 
   @spec mug_test() :: bool()
   def mug_test() do
-    assert 10000
+    assert 10_000
            |> mug_call()
            |> Nock.nock([9, 2, 0 | 1])
            |> elem(1)
            |> Noun.equal?(795_713_195)
 
-    assert 10001
+    assert 10_001
            |> mug_call()
            |> Nock.nock([9, 2, 0 | 1])
            |> elem(1)
@@ -1495,7 +1495,7 @@ defmodule Examples.ENock do
            |> elem(1)
            |> Noun.equal?(1)
 
-    assert mor_call(43326, 41106)
+    assert mor_call(43_326, 41_106)
            |> Nock.nock([9, 2, 0 | 1])
            |> elem(1)
            |> Noun.equal?(1)
@@ -2414,7 +2414,7 @@ defmodule Examples.ENock do
   end
 
   @spec commitment_test(pos_integer) :: binary()
-  def commitment_test(n \\ :rand.uniform(10000)) do
+  def commitment_test(n \\ :rand.uniform(10_000)) do
     res = %Resource{quantity: n} |> Noun.Nounable.to_noun()
 
     {:ok, res} = make_commitment_call(res)
@@ -2422,8 +2422,8 @@ defmodule Examples.ENock do
     <<"CM_", _rest::bitstring>> = Noun.atom_integer_to_binary(res)
   end
 
-  @spec is_commitment_arm() :: Noun.t()
-  def is_commitment_arm() do
+  @spec commitment_check_arm() :: Noun.t()
+  def commitment_check_arm() do
     arm_info = Mugs.index_map().is_commitment
     layer_depth = example_layer_depth(arm_info.layer)
     arm_index = arm_info.index
@@ -2435,11 +2435,11 @@ defmodule Examples.ENock do
   @spec make_is_commitment_call(Noun.t()) :: Noun.t()
   def make_is_commitment_call(atom) do
     sample = atom
-    [is_commitment_arm(), sample | Nock.Lib.rm_core()]
+    [commitment_check_arm(), sample | Nock.Lib.rm_core()]
   end
 
-  @spec is_commitment_test() :: true
-  def is_commitment_test() do
+  @spec commitment_check_test() :: true
+  def commitment_check_test() do
     atom_true = "CM_whatever"
     atom_false = "NF_whatever"
     atom_weird_still_false = "a"
@@ -2480,7 +2480,7 @@ defmodule Examples.ENock do
 
   @spec nullifier_test() :: true
   @spec nullifier_test(pos_integer()) :: true
-  def nullifier_test(n \\ :rand.uniform(10000)) do
+  def nullifier_test(n \\ :rand.uniform(10_000)) do
     resource = %Resource{quantity: n}
 
     {:ok, res} = make_nullifier_call([0 | Noun.Nounable.to_noun(resource)])
@@ -2492,8 +2492,8 @@ defmodule Examples.ENock do
     assert unnouned == resource
   end
 
-  @spec is_nullifier_arm() :: Noun.t()
-  def is_nullifier_arm() do
+  @spec nullifier_check_arm() :: Noun.t()
+  def nullifier_check_arm() do
     arm_info = Mugs.index_map().is_nullifier
     layer_depth = example_layer_depth(arm_info.layer)
     arm_index = arm_info.index
@@ -2505,11 +2505,11 @@ defmodule Examples.ENock do
   @spec make_is_nullifier_call(Noun.t()) :: Noun.t()
   def make_is_nullifier_call(atom) do
     sample = atom
-    [is_nullifier_arm(), sample | Nock.Lib.rm_core()]
+    [nullifier_check_arm(), sample | Nock.Lib.rm_core()]
   end
 
-  @spec is_nullifier_test() :: true
-  def is_nullifier_test() do
+  @spec nullifier_check_test() :: true
+  def nullifier_check_test() do
     atom_true = "NF_whatever"
     atom_false = "CM_whatever"
     atom_weird_still_false = "a"
@@ -2612,6 +2612,7 @@ defmodule Examples.ENock do
     assert ETransaction.swap_from_actions() == tx
   end
 
+  @spec secp_sign_arm() :: Noun.t()
   def secp_sign_arm() do
     arm_info = Mugs.index_map().secp256k1_sign
     layer_depth = example_layer_depth(arm_info.layer)
@@ -2621,6 +2622,8 @@ defmodule Examples.ENock do
     |> Noun.Format.parse_always()
   end
 
+  @spec secp_sign_call(binary(), binary()) ::
+          {:ok, Noun.t()} | {:error, Nock.error()}
   def secp_sign_call(msg, key) do
     sample = [msg | key]
 
@@ -2628,6 +2631,7 @@ defmodule Examples.ENock do
     |> Nock.nock([9, 2, 0 | 1])
   end
 
+  @spec secp_sign_test(binary(), binary()) :: true
   def secp_sign_test(
         msg \\ :crypto.strong_rand_bytes(32),
         key \\ :crypto.strong_rand_bytes(32)
@@ -2638,6 +2642,7 @@ defmodule Examples.ENock do
     assert Noun.equal?(Noun.Nounable.to_noun(res2), res)
   end
 
+  @spec secp_public_key_arm() :: Noun.t()
   def secp_public_key_arm() do
     arm_info = Mugs.index_map().secp256k1_pub_key
     layer_depth = example_layer_depth(arm_info.layer)
@@ -2647,6 +2652,8 @@ defmodule Examples.ENock do
     |> Noun.Format.parse_always()
   end
 
+  @spec secp_public_key_call(binary()) ::
+          {:ok, Noun.t()} | {:error, Nock.error()}
   def secp_public_key_call(priv_key) do
     sample = priv_key
 
@@ -2654,6 +2661,7 @@ defmodule Examples.ENock do
     |> Nock.nock([9, 2, 0 | 1])
   end
 
+  @spec secp_public_key_test(binary()) :: true
   def secp_public_key_test(key \\ :crypto.strong_rand_bytes(32)) do
     {:ok, res} = secp_public_key_call(key)
     {:ok, res2} = ExSecp256k1.create_public_key(key)
@@ -2661,6 +2669,7 @@ defmodule Examples.ENock do
     assert res2 == res
   end
 
+  @spec secp_verify_arm() :: Noun.t()
   def secp_verify_arm() do
     arm_info = Mugs.index_map().secp256k1_verify
     layer_depth = example_layer_depth(arm_info.layer)
@@ -2670,6 +2679,8 @@ defmodule Examples.ENock do
     |> Noun.Format.parse_always()
   end
 
+  @spec secp_verify_call(binary(), binary(), binary()) ::
+          {:ok, Noun.t()} | {:error, Nock.error()}
   def secp_verify_call(msg, sig, key) do
     sample = [msg, sig | key]
 
@@ -2677,6 +2688,7 @@ defmodule Examples.ENock do
     |> Nock.nock([9, 2, 0 | 1])
   end
 
+  @spec secp_verify_test(binary(), binary()) :: true
   def secp_verify_test(
         msg \\ :crypto.strong_rand_bytes(32),
         key \\ :crypto.strong_rand_bytes(32)
@@ -2688,6 +2700,7 @@ defmodule Examples.ENock do
     assert Noun.equal?(bool, 0)
   end
 
+  @spec keccak_arm() :: Noun.t()
   def keccak_arm() do
     arm_info = Mugs.index_map().keccak256
     layer_depth = example_layer_depth(arm_info.layer)
@@ -2697,11 +2710,14 @@ defmodule Examples.ENock do
     |> Noun.Format.parse_always()
   end
 
+  @spec keccak_call(binary()) ::
+          {:ok, Noun.t()} | {:error, Nock.error()}
   def keccak_call(msg) do
     [keccak_arm(), msg | Nock.Lib.rm_core()]
     |> Nock.nock([9, 2, 0 | 1])
   end
 
+  @spec keccak_test(binary()) :: true
   def keccak_test(msg \\ :crypto.strong_rand_bytes(32)) do
     {:ok, res} = keccak_call(msg)
 
@@ -3362,6 +3378,7 @@ defmodule Examples.ENock do
   ####################################################################
 
   # Write Program Generator (writes a constant value to a key)
+  @spec write_code_gen(Noun.t(), Noun.t()) :: Noun.t()
   def write_code_gen(key_int, value) do
     reservations = [[1 | key_int] | 0]
     writes_logic = [1 | [[key_int | value] | 0]]
@@ -3379,11 +3396,11 @@ defmodule Examples.ENock do
 
     reservations = abc_list()
 
-    scryA = [12 | [[1 | 0] | [1 | key_a]]]
-    scryB = [12 | [[1 | 0] | [1 | key_b]]]
-    addFormula = [4 | [4 | [4 | [4 | [0 | 2]]]]]
-    sumFormula = [7 | [[scryA | scryB] | addFormula]]
-    writes_logic = [[[1 | key_c] | sumFormula] | [1 | 0]]
+    scry_a = [12 | [[1 | 0] | [1 | key_a]]]
+    scry_b = [12 | [[1 | 0] | [1 | key_b]]]
+    add_formula = [4 | [4 | [4 | [4 | [0 | 2]]]]]
+    sum_formula = [7 | [[scry_a | scry_b] | add_formula]]
+    writes_logic = [[[1 | key_c] | sum_formula] | [1 | 0]]
 
     [[0 | 3] | [reservations | [writes_logic | [0 | 0]]]]
   end
@@ -3397,8 +3414,8 @@ defmodule Examples.ENock do
     key_b = b_int()
 
     reservations = [[0 | key_a], [1 | key_b] | 0]
-    scryA = [12 | [[1 | 0] | [1 | key_a]]]
-    writes_logic = [[[1 | key_b] | scryA] | [1 | 0]]
+    scry_a = [12 | [[1 | 0] | [1 | key_a]]]
+    writes_logic = [[[1 | key_b] | scry_a] | [1 | 0]]
 
     [[0 | 3] | [reservations | [writes_logic | [0 | 0]]]]
   end

@@ -131,7 +131,7 @@ defmodule Anoma.Node.Examples.EShard do
     node_id
   end
 
-  @spec abc_val_a_write_to_5_shard_a() :: map()
+  @spec abc_val_a_waiting_7_11_shard_a() :: map()
   def abc_val_a_waiting_7_11_shard_a() do
     %{
       ["a"] => %Cell{
@@ -227,6 +227,7 @@ defmodule Anoma.Node.Examples.EShard do
     node_id
   end
 
+  @spec backup_convinece_stores_a(String.t()) :: String.t()
   def backup_convinece_stores_a(node_id \\ Node.example_random_id()) do
     abc_val_a_double_waiting_write_7_11(node_id)
 

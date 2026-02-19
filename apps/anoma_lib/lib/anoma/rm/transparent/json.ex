@@ -2,6 +2,8 @@
 # Resource
 
 defimpl Jason.Encoder, for: Anoma.RM.Transparent.Resource do
+  @spec encode(Anoma.RM.Transparent.Resource.t(), Jason.Encode.opts()) ::
+          iodata()
   def encode(resource, opts) do
     resource =
       resource
@@ -15,6 +17,10 @@ end
 # ----------------------------------------------------------------------------
 # CPS Instance
 defimpl Jason.Encoder, for: Anoma.RM.Transparent.ProvingSystem.CPS.Instance do
+  @spec encode(
+          Anoma.RM.Transparent.ProvingSystem.CPS.Instance.t(),
+          Jason.Encode.opts()
+        ) :: iodata()
   def encode(instance, opts) do
     # encode the consumed resources
     consumed =
@@ -38,6 +44,8 @@ end
 # Compliance Unit
 
 defimpl Jason.Encoder, for: Anoma.RM.Transparent.ComplianceUnit do
+  @spec encode(Anoma.RM.Transparent.ComplianceUnit.t(), Jason.Encode.opts()) ::
+          iodata()
   def encode(compliance_unit, opts) do
     # encode the consumed resources
     compliance_unit
@@ -97,6 +105,7 @@ defimpl Jason.Encoder, for: Anoma.RM.Transparent.Action do
   end
 
   # https://specs.anoma.net/latest/arch/system/state/resource_machine/data_structures/action/index.html
+  @spec encode(Action.t(), Jason.Encode.opts()) :: iodata()
   def encode(action, opts) do
     extra_info = extra_info(action)
 
@@ -135,6 +144,8 @@ defimpl Jason.Encoder, for: Anoma.RM.Transparent.Action do
   # Action
 
   defimpl Jason.Encoder, for: Anoma.RM.Transparent.Transaction do
+    @spec encode(Anoma.RM.Transparent.Transaction.t(), Jason.Encode.opts()) ::
+            iodata()
     def encode(transaction, opts) do
       transaction
       |> Map.update!(:delta_proof, &Base.encode64/1)

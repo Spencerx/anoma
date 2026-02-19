@@ -73,6 +73,7 @@ defmodule Anoma.Node.Intents.Solver do
     GenServer.call(name, :get_unsolved)
   end
 
+  @spec disable(String.t()) :: boolean()
   def disable(node_id) do
     name = Registry.via(node_id, __MODULE__)
     GenServer.call(name, :disable)

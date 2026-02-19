@@ -100,6 +100,7 @@ defmodule Anoma.CairoResource.LogicInstance do
     end
   end
 
+  @spec get_app_data_pair(binary()) :: {binary(), [[binary()]]}
   def get_app_data_pair(public_input) do
     output =
       public_input

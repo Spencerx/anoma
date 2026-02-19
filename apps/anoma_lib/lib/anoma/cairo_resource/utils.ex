@@ -60,8 +60,8 @@ defmodule Anoma.CairoResource.Utils do
           {:ok, list(any())} | {:error, any()}
   def check_list(lst) do
     with true <-
-           Enum.all?(lst, &(elem(&1, 0) == :ok)),
-         lst_1 = Enum.map(lst, &elem(&1, 1)) do
+           Enum.all?(lst, &(elem(&1, 0) == :ok)) do
+      lst_1 = Enum.map(lst, &elem(&1, 1))
       {:ok, lst_1}
     else
       _ -> Enum.find(lst, &(elem(&1, 0) == :error))

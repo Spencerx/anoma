@@ -46,6 +46,7 @@ defmodule Anoma.Client.Web.IntentsController do
   I return a list of all intents from the remote node.
   The intents will be jammed nouns, base64 encoded.
   """
+  @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def index(conn, _params) do
     with {:ok, intents} <- GRPCProxy.list_intents() do
       render(conn, "index.json", intents: intents)
@@ -59,6 +60,7 @@ defmodule Anoma.Client.Web.IntentsController do
 
   If anything goes wrong, I will return an error and this will be handled by the fallback controller.
   """
+  @spec add_intent(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def add_intent(conn, params = %{"intent" => _}) do
     with {:ok, intent} <- Base.decode64(params["intent"]),
          {:ok, :added} <- GRPCProxy.add_intent(intent) do

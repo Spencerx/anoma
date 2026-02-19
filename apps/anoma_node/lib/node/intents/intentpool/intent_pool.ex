@@ -312,6 +312,7 @@ defmodule Anoma.Node.Intents.IntentPool do
     {:ok, reason, state}
   end
 
+  @spec reject_intents(MapSet.t(), MapSet.t()) :: MapSet.t()
   def reject_intents(intents, set) do
     intents
     |> Enum.filter(

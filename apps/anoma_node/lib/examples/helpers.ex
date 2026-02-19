@@ -62,6 +62,7 @@ defmodule Anoma.Node.Examples.Helpers do
   Given the pid of a logger process, I check return whether the given event was
   emitted by mnesia or not.
   """
+  @spec seen_event?(pid(), term()) :: boolean()
   def seen_event?(logger_pid, event) do
     send(logger_pid, {:seen, event, self()})
 

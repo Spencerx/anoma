@@ -85,6 +85,7 @@ defmodule Anoma.Node.Examples.EShardSupervisor do
     node_id
   end
 
+  @spec read_table(atom(), term()) :: {:atomic, list()} | {:aborted, term()}
   def read_table(table, key) do
     :mnesia.transaction(fn -> :mnesia.read({table, key}) end)
   end

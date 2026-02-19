@@ -171,17 +171,24 @@ defmodule Anoma.Node.Intents.IntentPool do
          :ok <- validate_commitment_uniqueness(intent, state.cms_set) do
       table = Tables.table_intents(state.node_id)
 
-      :mnesia.transaction(fn ->
-        res =
-          case :mnesia.read(table, "intents") do
-            [] -> MapSet.new()
-            [{^table, "intents", res}] -> res
-          end
+      result =
+        :mnesia.transaction(fn ->
+          res =
+            case :mnesia.read(table, "intents") do
+              [] -> MapSet.new()
+              [{^table, "intents", res}] -> res
+            end
 
-        :mnesia.write({table, "intents", MapSet.put(res, intent)})
-      end)
+          :mnesia.write({table, "intents", MapSet.put(res, intent)})
+        end)
 
-      {:ok, :inserted, add_intent!(intent, state)}
+      case result do
+        {:atomic, _} ->
+          {:ok, :inserted, add_intent!(intent, state)}
+
+        {:aborted, _reason} ->
+          {:ok, :already_present, state}
+      end
     else
       {:error, reason} -> handle_error(intent, reason, state)
     end

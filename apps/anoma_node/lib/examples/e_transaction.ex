@@ -875,4 +875,15 @@ defmodule Anoma.Node.Examples.ETransaction do
 
     node_id
   end
+
+  @doc """
+  I verify that `Backends.emit_value/3` returns the wrapped result
+  rather than the bare `:ok` from `EventBroker.event/1`.
+  """
+  @spec emit_value_returns_result() :: :ok
+  def emit_value_returns_result() do
+    assert {:ok, [1 | 2]} == Backends.emit_value("any", "id1", [1 | 2])
+    assert :error == Backends.emit_value("any", "id2", :error)
+    :ok
+  end
 end

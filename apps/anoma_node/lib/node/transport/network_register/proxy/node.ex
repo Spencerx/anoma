@@ -178,12 +178,10 @@ defmodule Anoma.Node.Transport.Proxy.Node do
     case list_transport_protocols(remote_node_id) do
       [] ->
         Logger.error("no protocols for #{remote_node_id}")
-        {:reply, :ok, state}
 
       [transport_protocol | _] ->
         address = Registry.via(transport_protocol)
-        result = TransportProtocol.event(address, message)
-        {:reply, result, state}
+        TransportProtocol.event(address, message)
     end
 
     {:noreply, state}

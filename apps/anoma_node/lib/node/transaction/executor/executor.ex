@@ -213,7 +213,7 @@ defmodule Anoma.Node.Transaction.Executor do
     end
   end
 
-  @spec listen_for_worker_finish!(integer()) :: :ok
+  @spec listen_for_block_finish!([binary()]) :: :ok
   defp listen_for_block_finish!(list) do
     receive do
       %EventBroker.Event{

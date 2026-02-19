@@ -85,19 +85,17 @@ defmodule Anoma.Node.Transport.Proxy.Engine do
           "already registered #{args[:engine]} engine for #{args[:remote_node_id]}"
         )
 
-        {:stop, :already_registered}
+        :ignore
 
       {:ok, _} ->
         Logger.debug("registered engine for #{args[:remote_node_id]}")
-        {:ok, args}
+        Logger.debug("#{inspect(self())} proxy engine for #{inspect(args)}")
+        Process.set_label(__MODULE__)
+
+        args = Keyword.validate!(args, @args)
+        state = struct(__MODULE__, Enum.into(args, %{}))
+        {:ok, state}
     end
-
-    Logger.debug("#{inspect(self())} proxy engine for #{inspect(args)}")
-    Process.set_label(__MODULE__)
-
-    args = Keyword.validate!(args, @args)
-    state = struct(__MODULE__, Enum.into(args, %{}))
-    {:ok, state}
   end
 
   @impl true

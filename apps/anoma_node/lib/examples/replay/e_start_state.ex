@@ -258,6 +258,7 @@ defmodule Anoma.Node.Examples.EReplay.StartState do
   If a block event is fired, the Logging engine will remove these values from the database.
   We make sure that this not happen by mocking this behaviour.
   """
+  @spec mempool_obsolete_consensus(ENode.t()) :: ENode.t()
   def mempool_obsolete_consensus(enode \\ ENode.start_node()) do
     with_subscription [[]] do
       # create ten blocks
@@ -296,6 +297,7 @@ defmodule Anoma.Node.Examples.EReplay.StartState do
     end
   end
 
+  @spec mempool_obsolete_consensi(ENode.t()) :: ENode.t()
   def mempool_obsolete_consensi(enode \\ ENode.start_node()) do
     with_subscription [[]] do
       # create ten blocks

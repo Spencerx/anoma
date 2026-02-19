@@ -45,6 +45,7 @@ defmodule Anoma.Client.Web.TransactionController do
   I return a list of all intents from the remote node.
   The intents will be jammed nouns, base64 encoded.
   """
+  @spec compose(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def compose(conn, _params = %{"transactions" => transactions}) do
     with {:ok, transactions} <- decode_many(transactions),
          {:ok, composed} <- Transactions.compose(transactions) do
@@ -58,6 +59,7 @@ defmodule Anoma.Client.Web.TransactionController do
     end
   end
 
+  @spec verify(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def verify(conn, _params = %{"transaction" => transaction}) do
     with {:ok, transaction} <- Base.decode64(transaction),
          {:ok, valid?} <- Transactions.verify(transaction) do

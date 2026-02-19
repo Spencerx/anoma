@@ -15,6 +15,7 @@ defmodule Anoma.Client.Examples.EClient.Mempool do
   import ExUnit.Assertions
   import ExUnit.CaptureLog
 
+  @spec example_transaction() :: String.t()
   def example_transaction do
     transaction = ETransaction.trivial_transparent_transaction()
 

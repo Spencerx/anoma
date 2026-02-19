@@ -37,6 +37,8 @@ defmodule Anoma.Node.Transport.GRPC.Servers.PubSub do
     %Unsubscribe.Response{}
   end
 
+  @spec publish(Anoma.Proto.PubSub.Event.Request.t(), Stream.t()) ::
+          Event.Response.t()
   def publish(request, _stream) do
     Logger.debug("GRPC #{inspect(__ENV__.function)}: #{inspect(request)}")
     # reconstruct the event and fire it on the eventbroker

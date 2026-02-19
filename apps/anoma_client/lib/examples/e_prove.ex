@@ -159,6 +159,7 @@ defmodule Anoma.Client.Examples.EProve do
     program
   end
 
+  @spec prove_with_scry(Anoma.Client.Examples.EClient.t()) :: :ok
   def prove_with_scry(client \\ Anoma.Client.Examples.EClient.setup()) do
     :ok = Tables.reset_tables_for_client()
 

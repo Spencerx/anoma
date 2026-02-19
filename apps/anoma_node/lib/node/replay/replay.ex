@@ -46,6 +46,8 @@ defmodule Anoma.Node.Replay do
   #                       Public                             #
   ############################################################
 
+  @spec wait_for_confirm(String.t(), any()) ::
+          {:ok, :confirmed} | {:error, :confirm_failed}
   def wait_for_confirm(_temp_node_id, nil) do
     {:ok, :confirmed}
   end
@@ -59,7 +61,7 @@ defmodule Anoma.Node.Replay do
         %{body: %{node_id: ^temp_node_id, body: %{task: _}}} ->
           {:error, :confirm_failed}
       after
-        10000 ->
+        10_000 ->
           {:error, :confirm_failed}
       end
 
@@ -114,14 +116,14 @@ defmodule Anoma.Node.Replay do
     end
   end
 
-  @spec init_tables_node(any(), binary()) ::
-          {:error, :failed_to_create_replay_node | :target_node_existed}
-          | {:ok, :data_initialized}
   @doc """
   Given a node id, I will create the tables for the node and initialize them with
   the data used to replay.
   I do not start a node, I only set up its tables.
   """
+  @spec init_tables_node(String.t(), String.t()) ::
+          {:ok, :data_initialized}
+          | {:error, :target_node_existed | :failed_to_create_replay_node}
   def init_tables_node(from_node_id, to_node_id) do
     with {:ok, :created} <- Tables.initialize_tables_for_node(to_node_id),
          {:ok, :copied} <- duplicate_tables(from_node_id, to_node_id) do

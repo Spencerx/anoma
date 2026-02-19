@@ -129,6 +129,7 @@ defmodule Noun do
     [normalize_noun(h) | normalize_noun(t)]
   end
 
+  @spec abnormalize_noun(t()) :: t()
   def abnormalize_noun(atom) when is_noun_atom(atom) do
     cond do
       atom == [] -> 0
@@ -172,12 +173,21 @@ defmodule Noun do
     mum(0xDEADBEEF, 0xFFFE, key)
   end
 
+  @spec mum(noun_atom(), non_neg_integer(), noun_atom()) ::
+          non_neg_integer() | nil
   def mum(seed, fal, key) do
     key = Noun.atom_integer_to_binary(key)
     seed = Noun.atom_binary_to_integer(seed)
     mum_rec(0, seed, fal, key)
   end
 
+  @spec mum_rec(
+          non_neg_integer(),
+          non_neg_integer(),
+          non_neg_integer(),
+          binary()
+        ) ::
+          non_neg_integer() | nil
   def mum_rec(i, seed, fal, key) do
     if i == 8 do
       fal

@@ -76,7 +76,8 @@ defmodule Anoma.Node.Transaction.Storage.Events do
       end
     end
 
-    def encode(%WriteEvent{} = event, opts) do
+    @spec encode(WriteEvent.t(), Jason.Encode.opts()) :: iodata()
+    def encode(event = %WriteEvent{}, opts) do
       writes =
         event.writes
         |> Enum.map(fn {key, term} ->

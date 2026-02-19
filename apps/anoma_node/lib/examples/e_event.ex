@@ -24,6 +24,7 @@ defmodule Anoma.Node.Examples.EEvent do
   # @doc """
   # I create a transaction event
   # """
+  @spec transaction_event(ENode.t()) :: EventBroker.Event.t()
   @spec transaction_event(ENode.t(), ETransaction.t()) ::
           EventBroker.Event.t()
   def transaction_event(enode \\ ENode.start_node()) do

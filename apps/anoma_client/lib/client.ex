@@ -134,6 +134,11 @@ defmodule Anoma.Client do
   @doc """
   I compose a list of transactions.
   """
+  @spec compose([binary()]) ::
+          {:ok, binary()}
+          | {:error, :invalid_input, term()}
+          | {:error, :noun_not_a_valid_transaction}
+          | {:error, :not_enough_transactions}
   def compose(transactions) do
     Transactions.compose(transactions)
   end

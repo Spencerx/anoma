@@ -158,7 +158,7 @@ defmodule Examples.ECommitmentTree do
   @doc """
   A commitment tree with commits from Examples.ERM.EShielded.ETransaction.a_shielded_transaction/0
   """
-  @spec ct_with_trivial_cairo_tx(term()) ::
+  @spec ct_with_trivial_cairo_tx(term(), CommitmentTree.Spec.t()) ::
           {CommitmentTree.t(), binary()}
   def ct_with_trivial_cairo_tx(
         cms,

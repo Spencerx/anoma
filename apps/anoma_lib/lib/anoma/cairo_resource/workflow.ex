@@ -18,12 +18,13 @@ defmodule Anoma.CairoResource.Workflow do
          {:ok, program} <-
            resource_logic["data"]
            |> Enum.map(&Utils.integer_or_hex_to_n_byte_binary(&1, 32))
-           |> Utils.check_list(),
-         hash =
-           Enum.drop(program, -2)
-           |> Enum.map(&:binary.bin_to_list/1)
-           |> Cairo.poseidon_many()
-           |> :binary.list_to_bin() do
+           |> Utils.check_list() do
+      hash =
+        Enum.drop(program, -2)
+        |> Enum.map(&:binary.bin_to_list/1)
+        |> Cairo.poseidon_many()
+        |> :binary.list_to_bin()
+
       {:ok, hash}
     else
       {:error, msg} -> {:error, "Error hashing resource logic: #{msg}"}
@@ -111,9 +112,9 @@ defmodule Anoma.CairoResource.Workflow do
   defp get_resources(update, jsons, resource_logics) do
     with {:ok, logic_hashes} <-
            Enum.map(resource_logics, &hash_resource_logic/1)
-           |> Utils.check_list(),
-         resource_jsons = update.(jsons, logic_hashes),
-         resources = Enum.map(resource_jsons, &Resource.from_json_object/1) do
+           |> Utils.check_list() do
+      resource_jsons = update.(jsons, logic_hashes)
+      resources = Enum.map(resource_jsons, &Resource.from_json_object/1)
       {:ok, resources}
     else
       {:error, msg} -> {:error, "Error reading resources: #{msg}"}
@@ -251,18 +252,19 @@ defmodule Anoma.CairoResource.Workflow do
         nf_keys,
         merkle_paths
       ) do
-    with updated_witness_jsons =
-           Enum.zip_with(
-             witnesses,
-             Enum.zip(
-               resources,
-               Enum.zip(is_consumed_flags, Enum.zip(nf_keys, merkle_paths))
-             ),
-             fn json, {r, {is_consumed_flag, {nk, p}}} ->
-               update_witness_json(json, r, is_consumed_flag, nk, p)
-             end
-           ),
-         {:ok, updated_witnesses} <-
+    updated_witness_jsons =
+      Enum.zip_with(
+        witnesses,
+        Enum.zip(
+          resources,
+          Enum.zip(is_consumed_flags, Enum.zip(nf_keys, merkle_paths))
+        ),
+        fn json, {r, {is_consumed_flag, {nk, p}}} ->
+          update_witness_json(json, r, is_consumed_flag, nk, p)
+        end
+      )
+
+    with {:ok, updated_witnesses} <-
            Enum.map(updated_witness_jsons, &Jason.encode/1)
            |> Utils.check_list() do
       {:ok, updated_witnesses}

@@ -81,6 +81,7 @@ defmodule Anoma.Node.Transport.NetworkRegister do
   I advertise to the given remote node, using the information I have about that
   node in my register.
   """
+  @spec advertise_to(String.t(), String.t()) :: :ok
   def advertise_to(node_id, remote_node_id) do
     GenServer.cast(
       Registry.via(node_id, __MODULE__),
@@ -88,6 +89,7 @@ defmodule Anoma.Node.Transport.NetworkRegister do
     )
   end
 
+  @spec susbcribe_to(String.t(), String.t(), String.t()) :: :ok
   def susbcribe_to(node_id, remote_node_id, topic) do
     GenServer.cast(
       Registry.via(node_id, __MODULE__),

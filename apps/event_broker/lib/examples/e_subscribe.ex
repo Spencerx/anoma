@@ -90,6 +90,7 @@ defmodule Examples.EEventBroker.Subscribe do
   I subscribe a process to events, and check whether the registry cleans up its
   subscriptions when it goes offline.
   """
+  @spec unsubscribe_on_down() :: any()
   def unsubscribe_on_down() do
     # any filter will do
     filter = %EFilter.AcceptAll{}

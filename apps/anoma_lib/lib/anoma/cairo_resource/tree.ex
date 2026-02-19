@@ -55,15 +55,16 @@ defmodule Anoma.CairoResource.Tree do
     end
   end
 
-  @spec set_path(binary(), list()) :: :error | {:ok, binary()}
+  @spec set_path(binary(), list(), String.t()) :: :error | {:ok, binary()}
   def set_path(json, path, path_name \\ "merkle_path") do
     with {:ok, decoded_json} <-
-           Jason.decode(json, objects: :ordered_objects),
-         path_json_ob =
-           path
-           |> Enum.map(fn {f, s} ->
-             Jason.OrderedObject.new([{"fst", f}, {"snd", s}])
-           end) do
+           Jason.decode(json, objects: :ordered_objects) do
+      path_json_ob =
+        path
+        |> Enum.map(fn {f, s} ->
+          Jason.OrderedObject.new([{"fst", f}, {"snd", s}])
+        end)
+
       put_in(decoded_json[path_name], path_json_ob) |> Jason.encode()
     else
       _ -> :error

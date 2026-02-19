@@ -297,6 +297,7 @@ defmodule Anoma.Node.Transaction.Backends do
     end)
   end
 
+  @spec emit_value(String.t(), binary(), Noun.t()) :: :ok
   def emit_value(node_id, id, result) do
     wrapped_result =
       case result do

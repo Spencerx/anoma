@@ -56,6 +56,7 @@ defimpl Nounable, for: Bool do
     Nounable.to_noun(bool)
   end
 
+  @spec to_noun() :: :error
   def to_noun(), do: :error
 
   @doc """
@@ -139,6 +140,7 @@ defimpl Nounable, for: MapSet do
     end
   end
 
+  @spec noun_set_put(Noun.t(), Noun.t()) :: Noun.t()
   def noun_set_put(zero, elem) when is_noun_zero(zero) do
     [elem, 0 | 0]
   end

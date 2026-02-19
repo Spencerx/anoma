@@ -238,6 +238,8 @@ defmodule Nock do
     end
   end
 
+  @spec gas_limit(non_neg_integer(), pid(), non_neg_integer()) ::
+          non_neg_integer()
   def gas_limit(limit, pid, gas) do
     receive do
       {:gas, n} ->

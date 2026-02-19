@@ -114,26 +114,25 @@ defmodule Anoma.Node.Transaction.Mempool do
     end
 
     defp encode_maybe_noun(noun) do
-      with jammed <- Noun.Jam.jam(noun),
-           encoded <- Base.encode64(jammed) do
-        encoded
-      end
+      jammed = Noun.Jam.jam(noun)
+      Base.encode64(jammed)
     end
 
-    def encode(%Tx{} = tx, opts) do
-      with vm_result <- encode_maybe_noun(tx.vm_result),
-           tx_result <- encode_maybe_noun(tx.tx_result),
-           code <- encode_maybe_noun(tx.code) do
-        Jason.Encode.map(
-          %{
-            code: code,
-            tx_result: tx_result,
-            backend: nil,
-            vm_result: vm_result
-          },
-          opts
-        )
-      end
+    @spec encode(Tx.t(), Jason.Encode.opts()) :: iodata()
+    def encode(tx = %Tx{}, opts) do
+      vm_result = encode_maybe_noun(tx.vm_result)
+      tx_result = encode_maybe_noun(tx.tx_result)
+      code = encode_maybe_noun(tx.code)
+
+      Jason.Encode.map(
+        %{
+          code: code,
+          tx_result: tx_result,
+          backend: nil,
+          vm_result: vm_result
+        },
+        opts
+      )
     end
   end
 
@@ -364,6 +363,8 @@ defmodule Anoma.Node.Transaction.Mempool do
     %Backends.Events.ForMempoolFilter{}
   end
 
+  @spec filter_for_mempool_execution_events() ::
+          Backends.Events.ForMempoolExecutionFilter.t()
   def filter_for_mempool_execution_events() do
     %Backends.Events.ForMempoolExecutionFilter{}
   end
@@ -382,6 +383,7 @@ defmodule Anoma.Node.Transaction.Mempool do
     {:reply, tx_id, handle_tx(tx, tx_id, state)}
   end
 
+  @spec handle_call(term(), GenServer.from(), t()) :: {:reply, :ok, t()}
   def handle_call(_, _, state) do
     {:reply, :ok, state}
   end

@@ -72,11 +72,11 @@ defmodule Nock.Jets.Mugs do
     :keccak256 => %{:index => 22, :layer => 12},
     :kind => %{:index => 5972, :layer => Nock.Lib.stdlib_layers()},
     :delta_add => %{:index => 372, :layer => Nock.Lib.stdlib_layers()},
-    :delta_sub => %{:index => 12013, :layer => Nock.Lib.stdlib_layers()},
+    :delta_sub => %{:index => 12_013, :layer => Nock.Lib.stdlib_layers()},
     :zero_delta => %{:index => 174, :layer => Nock.Lib.stdlib_layers()},
     :resource_delta => %{:index => 701, :layer => Nock.Lib.stdlib_layers()},
     :commitment => %{:index => 3002, :layer => Nock.Lib.stdlib_layers()},
-    :is_commitment => %{:index => 12012, :layer => Nock.Lib.stdlib_layers()},
+    :is_commitment => %{:index => 12_012, :layer => Nock.Lib.stdlib_layers()},
     :nullifier => %{:index => 2815, :layer => Nock.Lib.stdlib_layers()},
     :is_nullifier => %{:index => 5974, :layer => Nock.Lib.stdlib_layers()},
     :compliance_unit_delta => %{
@@ -84,7 +84,7 @@ defmodule Nock.Jets.Mugs do
       :layer => Nock.Lib.stdlib_layers()
     },
     :action_delta => %{:index => 4, :layer => Nock.Lib.stdlib_layers()},
-    :make_delta => %{:index => 11951, :layer => Nock.Lib.stdlib_layers()},
+    :make_delta => %{:index => 11_951, :layer => Nock.Lib.stdlib_layers()},
     :action_create => %{:index => 382, :layer => Nock.Lib.stdlib_layers()},
     :trm_compliance_key => %{
       :index => 1502,

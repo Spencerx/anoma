@@ -172,6 +172,7 @@ defmodule Anoma.Node.Examples.EGRPC do
 
   I expect an error to occur.
   """
+  @spec add_intent_fail_no_intent(EGRPC.t()) :: boolean()
   def add_intent_fail_no_intent(%EGRPC{} = client \\ connect_to_node()) do
     node = %Node{id: client.node.node_id}
     request = %Add.Request{node: node}

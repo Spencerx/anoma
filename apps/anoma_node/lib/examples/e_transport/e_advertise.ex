@@ -172,7 +172,7 @@ defmodule Anoma.Node.Examples.EAdvertise do
   restarting mnesia.
   """
   @spec stop_slave(Peer.t()) :: :ok
-  def stop_slave(%Peer{} = peer) do
+  def stop_slave(peer = %Peer{}) do
     # delete the slave from the system
     {:ok, ipv4} = :inet.parse_ipv4_address(to_charlist("127.0.0.1"))
     :erl_boot_server.delete_slave(ipv4)
@@ -259,7 +259,7 @@ defmodule Anoma.Node.Examples.EAdvertise do
       [
         anoma_node: [grpc_port: my_grpc_port + 1500],
         anoma_client: [
-          {:grpc_port, 40052},
+          {:grpc_port, 40_052},
           {Anoma.Client.Web.Endpoint, [http: [port: 4001]]},
           {Anoma.Client.Web.SocketHandler, [port: 3001]}
         ]

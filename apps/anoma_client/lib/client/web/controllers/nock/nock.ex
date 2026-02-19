@@ -42,6 +42,7 @@ defmodule Anoma.Client.Web.NockController do
   @doc """
   I execute the given Nock program locally.
   """
+  @spec run(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def run(conn, params = %{"inputs" => _, "program" => _}) do
     inputs = params["inputs"]
     program = params["program"]
@@ -68,6 +69,7 @@ defmodule Anoma.Client.Web.NockController do
   @doc """
   I execute the given Nock program locally.
   """
+  @spec prove(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def prove(conn, params = %{"program" => _}) do
     priv_inputs = Map.get(params, "private_inputs", [])
     publ_inputs = Map.get(params, "public_inputs", [])

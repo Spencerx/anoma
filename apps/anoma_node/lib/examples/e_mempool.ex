@@ -113,6 +113,7 @@ defmodule Anoma.Node.Examples.Mempool do
   I add a transaction to the mempool that executes properly.
   I execute this transaction.
   """
+  @spec execute_transaction(ENode.t()) :: {ENode.t(), ETransaction.t()}
   @spec execute_transaction(ENode.t(), ETransaction.t()) ::
           {ENode.t(), ETransaction.t()}
 
@@ -144,6 +145,8 @@ defmodule Anoma.Node.Examples.Mempool do
   I execute this transaction.
   """
   @spec execute_multiple_transactions(ENode.t()) ::
+          {ENode.t(), [ETransaction.t()]}
+  @spec execute_multiple_transactions(ENode.t(), [ETransaction.t()]) ::
           {ENode.t(), [ETransaction.t()]}
 
   def execute_multiple_transactions(enode \\ ENode.start_node()) do
@@ -181,6 +184,7 @@ defmodule Anoma.Node.Examples.Mempool do
 
   I do not wait for the events of the block creation.
   """
+  @spec make_block(ENode.t()) :: {ENode.t(), ETransaction.t()}
   @spec make_block(
           ENode.t(),
           ETransaction.t()
@@ -227,6 +231,8 @@ defmodule Anoma.Node.Examples.Mempool do
      E.g., {:ok, {:read_value, [["key" | 0] | 0]}}
    - The id of the transaction
   """
+  @spec complete_transaction(ENode.t(), non_neg_integer()) ::
+          {ENode.t(), ETransaction.t()}
   @spec complete_transaction(
           ENode.t(),
           ETransaction.t(),

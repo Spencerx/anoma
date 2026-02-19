@@ -437,9 +437,7 @@ defmodule Anoma.Node.Transaction.Storage do
       end
 
       for {key, value} <- state.uncommitted_updates do
-        {:atomic, res} =
-          fn -> :mnesia.read(updates_table(state.node_id), key) end
-          |> :mnesia.transaction()
+        res = :mnesia.read(updates_table(state.node_id), key)
 
         updates_table = updates_table(state.node_id)
 
@@ -452,14 +450,14 @@ defmodule Anoma.Node.Transaction.Storage do
         :mnesia.write({updates_table(state.node_id), key, new_updates})
       end
 
-      noun_writes = Enum.map(writes, &Noun.Nounable.to_noun/1)
+      noun_writes = Enum.map(writes || [], &Noun.Nounable.to_noun/1)
 
       :mnesia.write(
         {blocks_table(state.node_id), ["anoma", "block", round], noun_writes}
       )
     end
 
-    :mnesia.transaction(mnesia_tx)
+    {:atomic, _} = :mnesia.transaction(mnesia_tx)
 
     %__MODULE__{
       state

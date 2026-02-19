@@ -375,12 +375,13 @@ defmodule Anoma.Node.Transaction.Ordering do
 
       noun_writes = Enum.map(writes, &Noun.Nounable.to_noun/1)
 
-      :mnesia.transaction(fn ->
-        :mnesia.write(
-          {Tables.table_blocks(state.node_id), ["anoma", "block", round],
-           noun_writes}
-        )
-      end)
+      {:atomic, _} =
+        :mnesia.transaction(fn ->
+          :mnesia.write(
+            {Tables.table_blocks(state.node_id), ["anoma", "block", round],
+             noun_writes}
+          )
+        end)
 
       GenServer.reply(from, :ok)
     end
